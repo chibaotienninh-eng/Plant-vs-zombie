@@ -2,253 +2,81 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0,
-maximum-scale=1.0,user-scalable=no">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Plant vs Zombie</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
+*{box-sizing:border-box}
 
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#203d18;
-  font-family:Arial,sans-serif;
+body{
+    margin:0;
+    overflow:hidden;
+    background:#72bd3d;
+    font-family:Arial,sans-serif;
 }
-
-/* =========================
-   GAME
-========================= */
 
 #game{
-  position:absolute;
-  left:0;
-  top:0;
-  width:100vw;
-  height:100vh;
-
-  display:flex;
-  flex-direction:column;
-
-  background:#78bd45;
+    width:100vw;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
 }
 
-/* =========================
-   THANH CÂY
-========================= */
-
+/* THANH TRÊN */
 #top{
-  height:70px;
-  flex:0 0 70px;
-
-  display:flex;
-  align-items:center;
-  gap:6px;
-
-  padding:5px 8px;
-
-  background:
-    linear-gradient(#4c8535,#28551e);
-
-  border-bottom:3px solid #173b13;
-
-  z-index:20;
+    height:70px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:6px;
+    background:linear-gradient(#4d8b32,#28551c);
+    border-bottom:3px solid #1d4014;
 }
 
-#sunBox{
-  min-width:80px;
-  height:54px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  border-radius:18px;
-
-  background:
-    linear-gradient(#fff5a0,#f2c83a);
-
-  border:2px solid #9b760d;
-
-  color:#222;
-  font-weight:bold;
-  font-size:16px;
+#sun{
+    min-width:80px;
+    height:52px;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#ffd83d;
+    border:3px solid #9c7711;
+    font-weight:bold;
+    font-size:18px;
 }
 
-.plantBtn{
-  height:55px;
-  min-width:82px;
-
-  border:2px solid #315e23;
-  border-radius:9px;
-
-  background:
-    linear-gradient(#ffffff,#d7e8c9);
-
-  font-weight:bold;
-  font-size:11px;
+.card{
+    height:52px;
+    min-width:85px;
+    border:2px solid #456b32;
+    border-radius:9px;
+    background:#f3f3df;
+    font-weight:bold;
 }
 
-.plantBtn small{
-  font-size:9px;
-}
-
-.plantBtn.selected{
-  outline:3px solid #ffe34f;
-  box-shadow:0 0 10px #ffe34f;
+.card.selected{
+    outline:3px solid #ffe34a;
 }
 
 #restart{
-  width:48px;
-  height:50px;
-
-  border:2px solid #315e23;
-  border-radius:9px;
-
-  background:#e8f1df;
-
-  font-size:22px;
+    height:50px;
+    width:50px;
+    font-size:20px;
 }
 
-/* =========================
-   SÂN
-========================= */
-
-#boardWrap{
-  flex:1;
-  min-height:0;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  padding:6px;
-
-  overflow:hidden;
-}
-
+/* SÂN */
 #board{
-  position:relative;
+    flex:1;
+    min-height:0;
+    margin:5px;
+    padding:4px;
 
-  width:100%;
-  height:100%;
+    display:grid;
+    grid-template-columns:repeat(9,1fr);
+    grid-template-rows:repeat(5,1fr);
 
-  display:grid;
+    gap:2px;
 
-  grid-template-columns:
-    repeat(9,1fr);
-
-  grid-template-rows:
-    repeat(5,1fr);
-
-  gap:2px;
-
-  padding:3px;
-
-  background:
-    repeating-linear-gradient(
-      0deg,
-      rgba(255,255,255,.035) 0px,
-      rgba(255,255,255,.035) 2px,
-      transparent 2px,
-      transparent 40px
-    ),
-    linear-gradient(#91d85b,#69ad3f);
-
-  border:3px solid #3b762b;
-  border-radius:6px;
-
-  overflow:hidden;
-}
-
-/* Ô đất */
-
-.cell{
-  position:relative;
-
-  min-width:0;
-  min-height:0;
-
-  border:
-    1px solid
-    rgba(45,100,30,.35);
-
-  background:
-    rgba(130,195,76,.32);
-
-  border-radius:3px;
-
-  touch-action:manipulation;
-}
-
-.cell:nth-child(even){
-  background:
-    rgba(105,175,61,.28);
-}
-
-/* =========================
-   CÂY
-========================= */
-
-.plant{
-  position:absolute;
-
-  inset:2%;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  z-index:5;
-
-  pointer-events:none;
-}
-
-.plant img{
-  width:100%;
-  height:100%;
-
-  object-fit:contain;
-
-  display:block;
-}
-
-/* =========================
-   ZOMBIE
-========================= */
-
-.zombie{
-  position:absolute;
-
-  width:55px;
-  height:70px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-size:42px;
-
-  z-index:8;
-
-  pointer-events:none;
-}
-
-/* =========================
-   ĐẠN
-========================= */
-
-.pea{
-  position:absolute;
-
-  width:14px;
-  height:14px;
-
- 
+   
