@@ -4,69 +4,465 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Plant vs Zombie</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#111;font-family:Arial,sans-serif;overflow:hidden}
-#game{width:100vw;height:100vh;display:flex;flex-direction:column;background:#79bd45}
-#top{height:76px;background:#254d20;color:white;display:flex;align-items:center;gap:12px;padding:8px}
-#sun{background:#f5c542;color:#222;border-radius:20px;padding:10px 16px;font-weight:bold}
-button{border:0;border-radius:10px;padding:10px 14px;font-weight:bold}
-#board{position:relative;flex:1;background:linear-gradient(#91d35a,#68ae3e);display:grid;grid-template-columns:repeat(9,1fr);grid-template-rows:repeat(5,1fr);gap:2px;padding:4px}
-.cell{border:1px solid rgba(30,90,25,.25);position:relative}
-.plant{position:absolute;inset:10%;border-radius:50%;background:#299b45;border:3px solid #176b2b;display:flex;align-items:center;justify-content:center;font-size:30px}
-.zombie{position:absolute;width:48px;height:58px;border-radius:18px;background:#697b62;border:3px solid #384537;display:flex;align-items:center;justify-content:center;font-size:28px;z-index:3}
-.pea{position:absolute;width:13px;height:13px;border-radius:50%;background:#b8ef38;z-index:4}
-#hint{text-align:center;background:#163814;color:#fff;padding:5px;font-size:13px}
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:#111;
+  font-family:Arial,sans-serif;
+  overflow:hidden;
+}
+
+#game{
+  width:100vw;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:#79bd45;
+}
+
+#top{
+  height:72px;
+  min-height:72px;
+  background:linear-gradient(#3f702e,#254d20);
+  color:white;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:7px 10px;
+  border-bottom:4px solid #173512;
+}
+
+#sun{
+  background:linear-gradient(#ffe77a,#f5c542);
+  color:#222;
+  border:2px solid #b98a12;
+  border-radius:22px;
+  padding:9px 15px;
+  font-weight:bold;
+  box-shadow:0 2px 4px #173512;
+}
+
+button{
+  border:2px solid #214d1b;
+  border-radius:10px;
+  padding:9px 13px;
+  font-weight:bold;
+  background:linear-gradient(#fff,#d7e7c9);
+  box-shadow:0 2px 3px #173512;
+}
+
+#board{
+  position:relative;
+  flex:1;
+  min-height:0;
+  background:linear-gradient(#91d35a,#68ae3e);
+  display:grid;
+  grid-template-columns:repeat(9,1fr);
+  grid-template-rows:repeat(5,1fr);
+  gap:3px;
+  padding:5px;
+  overflow:hidden;
+}
+
+.cell{
+  border:1px solid rgba(30,90,25,.25);
+  position:relative;
+  background:rgba(117,183,67,.22);
+  border-radius:3px;
+}
+
+.cell:nth-child(odd){
+  background:rgba(101,165,58,.20);
+}
+
+.plant{
+  position:absolute;
+  inset:10%;
+  border-radius:50%;
+  background:radial-gradient(
+    circle at 35% 30%,
+    #5fd35b,
+    #299b45 60%,
+    #176b2b
+  );
+  border:3px solid #176b2b;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:clamp(24px,5vw,40px);
+  filter:drop-shadow(0 2px 1px #315d20);
+}
+
+.zombie{
+  position:absolute;
+  width:clamp(42px,7vw,58px);
+  height:clamp(52px,9vw,68px);
+  border-radius:18px;
+  background:#697b62;
+  border:3px solid #384537;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:clamp(24px,5vw,34px);
+  z-index:3;
+  filter:drop-shadow(0 2px 1px #30402f);
+}
+
+.pea{
+  position:absolute;
+  width:13px;
+  height:13px;
+  border-radius:50%;
+  background:#b8ef38;
+  border:2px solid #4d9e22;
+  z-index:4;
+}
+
+#hint{
+  text-align:center;
+  background:#163814;
+  color:#fff;
+  padding:5px;
+  font-size:13px;
+}
+
+@media (orientation:portrait){
+  #game{
+    transform:rotate(90deg);
+    transform-origin:center center;
+    width:100vh;
+    height:100vw;
+    position:absolute;
+    left:50%;
+    top:50%;
+    margin-left:-50vh;
+    margin-top:-50vw;
+  }
+}
+
+@media (max-width:700px){
+  #top{
+    height:62px;
+    min-height:62px;
+  }
+
+  button{
+    padding:7px 10px;
+    font-size:12px;
+  }
+
+  #sun{
+    padding:7px 11px;
+    font-size:13px;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <div id="game">
+
   <div id="top">
-    <div id="sun">☀️ <span id="sunCount">100</span></div>
-    <button id="peaBtn">🌱 Đậu 50</button>
-    <button id="restart">🔄</button>
+
+    <div id="sun">
+      ☀️ <span id="sunCount">100</span>
+    </div>
+
+    <button id="peaBtn">
+      🌱 Đậu 50
+    </button>
+
+    <button id="restart">
+      🔄
+    </button>
+
   </div>
+
   <div id="board"></div>
-  <div id="hint">Chạm một ô để trồng cây. Zombie sẽ xuất hiện từ bên phải.</div>
+
+  <div id="hint">
+    Chạm một ô để trồng cây. Zombie sẽ xuất hiện từ bên phải.
+  </div>
+
 </div>
+
 <script>
-const board=document.getElementById('board'), sunEl=document.getElementById('sunCount');
-let sun=100, plants=[], zombies=[], peas=[], gameOver=false;
-const cells=[];
-for(let r=0;r<5;r++)for(let c=0;c<9;c++){let d=document.createElement('div');d.className='cell';d.dataset.r=r;d.dataset.c=c;board.appendChild(d);cells.push(d)}
-function setSun(n){sun=n;sunEl.textContent=sun}
-cells.forEach(cell=>cell.onclick=()=>{
- if(gameOver||cell.querySelector('.plant')||sun<50)return;
- let p=document.createElement('div');p.className='plant';p.textContent='🌱';cell.appendChild(p);
- plants.push({r:+cell.dataset.r,c:+cell.dataset.c,el:p,hp:3});
- setSun(sun-50);
+
+const board = document.getElementById("board");
+const sunEl = document.getElementById("sunCount");
+
+let sun = 100;
+let plants = [];
+let zombies = [];
+let peas = [];
+let gameOver = false;
+
+const ROWS = 5;
+const COLS = 9;
+
+const cells = [];
+
+
+/* TẠO SÂN 5 HÀNG × 9 CỘT */
+
+for(let r = 0; r < ROWS; r++){
+
+  for(let c = 0; c < COLS; c++){
+
+    const d = document.createElement("div");
+
+    d.className = "cell";
+
+    d.dataset.r = r;
+    d.dataset.c = c;
+
+    board.appendChild(d);
+
+    cells.push(d);
+  }
+}
+
+
+/* SUN */
+
+function setSun(n){
+
+  sun = n;
+
+  sunEl.textContent = sun;
+}
+
+
+/* TRỒNG CÂY */
+
+cells.forEach(cell => {
+
+  cell.onclick = () => {
+
+    if(gameOver) return;
+
+    if(cell.querySelector(".plant")) return;
+
+    if(sun < 50) return;
+
+    const p = document.createElement("div");
+
+    p.className = "plant";
+
+    p.textContent = "🌱";
+
+    cell.appendChild(p);
+
+    plants.push({
+
+      r: Number(cell.dataset.r),
+
+      c: Number(cell.dataset.c),
+
+      el: p,
+
+      hp: 3
+
+    });
+
+    setSun(sun - 50);
+
+  };
+
 });
+
+
+/* TẠO ZOMBIE */
+
 function spawn(){
- if(gameOver)return;
- let r=Math.floor(Math.random()*5), z=document.createElement('div');z.className='zombie';z.textContent='🧟';
- board.appendChild(z); zombies.push({r,x:board.clientWidth-55,el:z,hp:5});
+
+  if(gameOver) return;
+
+  const r = Math.floor(Math.random() * ROWS);
+
+  const z = document.createElement("div");
+
+  z.className = "zombie";
+
+  z.textContent = "🧟";
+
+  board.appendChild(z);
+
+  zombies.push({
+
+    r: r,
+
+    x: board.clientWidth - 60,
+
+    el: z,
+
+    hp: 5,
+
+    dead: false
+
+  });
+
 }
+
+
+/* BẮN ĐẬU */
+
 function shoot(){
- plants.forEach(p=>{
-  let q=document.createElement('div');q.className='pea';board.appendChild(q);
-  let rect=board.getBoundingClientRect(), cell=cells[p.r*9+p.c].getBoundingClientRect();
-  peas.push({r:p.r,x:cell.left-rect.left+cell.width*.65,y:cell.top-rect.top+cell.height*.45,el:q});
- });
+
+  if(gameOver) return;
+
+  plants.forEach(p => {
+
+    const q = document.createElement("div");
+
+    q.className = "pea";
+
+    board.appendChild(q);
+
+    const rect = board.getBoundingClientRect();
+
+    const cell =
+      cells[p.r * COLS + p.c].getBoundingClientRect();
+
+    peas.push({
+
+      r: p.r,
+
+      x: cell.left - rect.left + cell.width * .65,
+
+      y: cell.top - rect.top + cell.height * .45,
+
+      el: q,
+
+      dead: false
+
+    });
+
+  });
+
 }
+
+
+/* GAME LOOP */
+
 function loop(){
- if(gameOver)return;
- let rect=board.getBoundingClientRect();
- zombies.forEach(z=>{z.x-=.18;z.el.style.left=z.x+'px';z.el.style.top=(z.r*board.clientHeight/5+15)+'px'});
- peas.forEach(p=>{p.x+=3;p.el.style.left=p.x+'px';p.el.style.top=p.y+'px'});
- peas.forEach((p,i)=>{
-  zombies.forEach(z=>{
-   if(z.r===p.r && Math.abs(p.x-z.x)<45){z.hp--;p.el.remove();peas.splice(i,1);if(z.hp<=0){z.el.remove();z.dead=true;setSun(sun+25)}}});
- });
- zombies=zombies.filter(z=>!z.dead);
- if(zombies.some(z=>z.x<0)){gameOver=true;alert('Zombie đã vào nhà!');}
- requestAnimationFrame(loop);
+
+  if(gameOver) return;
+
+  zombies.forEach(z => {
+
+    z.x -= .18;
+
+    z.el.style.left = z.x + "px";
+
+    z.el.style.top =
+      (
+        z.r * board.clientHeight / ROWS
+        + board.clientHeight / 10
+        - z.el.offsetHeight / 2
+      ) + "px";
+
+  });
+
+
+  peas.forEach(p => {
+
+    p.x += 3;
+
+    p.el.style.left = p.x + "px";
+
+    p.el.style.top = p.y + "px";
+
+  });
+
+
+  /* ĐẠN TRÚNG ZOMBIE */
+
+  peas.forEach(p => {
+
+    if(p.dead) return;
+
+    zombies.forEach(z => {
+
+      if(z.dead) return;
+
+      if(
+        z.r === p.r &&
+        Math.abs(p.x - z.x) < 45
+      ){
+
+        z.hp--;
+
+        p.dead = true;
+
+        p.el.remove();
+
+        if(z.hp <= 0){
+
+          z.dead = true;
+
+          z.el.remove();
+
+          setSun(sun + 25);
+
+        }
+
+      }
+
+    });
+
+  });
+
+
+  peas = peas.filter(p => !p.dead);
+
+  zombies = zombies.filter(z => !z.dead);
+
+
+  /* ZOMBIE VÀO NHÀ */
+
+  if(zombies.some(z => z.x < 0)){
+
+    gameOver = true;
+
+    alert("🧟 Zombie đã vào nhà!");
+
+  }
+
+
+  requestAnimationFrame(loop);
+
 }
-document.getElementById('restart').onclick=()=>location.reload();
-setInterval(spawn,4000);setInterval(shoot,1800);loop();
+
+
+/* RESET */
+
+document.getElementById("restart").onclick = () => {
+
+  location.reload();
+
+};
+
+
+/* SPAWN ZOMBIE */
+
+setInterval(spawn,4000);
+
+
+/* BẮN ĐẬU */
+
+setInterval(shoot,1800);
+
+
+/* START */
+
+loop();
+
 </script>
+
 </body>
 </html>
