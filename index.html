@@ -1,170 +1,222 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta charset="UTF-8">
+<meta name="viewport"
+ content="width=device-width,initial-scale=1.0,
+ maximum-scale=1.0,user-scalable=no">
+
 <title>Plant vs Zombie</title>
 
 <style>
 *{box-sizing:border-box}
 
-body{
+html,body{
  margin:0;
- background:#111;
+ width:100%;
+ height:100%;
+ overflow:hidden;
  font-family:Arial,sans-serif;
- overflow:hidden
+ background:#4f8f32;
 }
 
 #game{
- width:100vw;
- height:100vh;
+ width:100%;
+ height:100%;
  display:flex;
  flex-direction:column;
- background:#79bd45
+ background:#78bd45;
 }
 
+/* THANH TRÊN */
 #top{
- height:72px;
- min-height:72px;
- background:linear-gradient(#3f702e,#254d20);
- color:white;
+ min-height:65px;
  display:flex;
  align-items:center;
- gap:10px;
- padding:7px 10px;
- border-bottom:4px solid #173512
+ gap:7px;
+ padding:6px;
+ background:linear-gradient(#497c35,#28531f);
+ border-bottom:3px solid #183715;
+ color:white;
 }
 
-#sun{
- background:linear-gradient(#ffe77a,#f5c542);
+#sunBox{
+ min-width:75px;
+ padding:8px;
+ text-align:center;
+ border-radius:18px;
+ background:linear-gradient(#fff08a,#f2c936);
+ border:2px solid #a77c0b;
  color:#222;
- border:2px solid #b98a12;
- border-radius:22px;
- padding:9px 15px;
- font-weight:bold
+ font-weight:bold;
 }
 
 button{
  border:2px solid #214d1b;
- border-radius:10px;
- padding:8px 12px;
+ border-radius:9px;
+ background:linear-gradient(#fff,#d7e8c9);
  font-weight:bold;
- background:linear-gradient(#fff,#d7e7c9)
 }
 
 .plantBtn{
  min-width:78px;
- line-height:1.05
-}
-
-.plantBtn.selected{
- outline:3px solid #ffe36b
+ min-height:50px;
+ padding:4px;
+ font-size:11px;
 }
 
 .plantBtn small{
- font-size:10px
+ font-size:9px;
+}
+
+.plantBtn.selected{
+ outline:3px solid #ffe36b;
+}
+
+#restart{
+ min-width:42px;
+ min-height:42px;
+ font-size:19px;
+}
+
+/* SÂN */
+#boardWrap{
+ flex:1;
+ min-height:0;
+ padding:4px;
 }
 
 #board{
  position:relative;
- flex:1;
- min-height:0;
- background:linear-gradient(#91d35a,#68ae3e);
+ width:100%;
+ height:100%;
  display:grid;
- grid-template-columns:repeat(9,1fr);
- grid-template-rows:repeat(5,1fr);
+
+ grid-template-columns:
+ repeat(9,1fr);
+
+ grid-template-rows:
+ repeat(5,1fr);
+
  gap:3px;
- padding:5px;
- overflow:hidden
+ padding:3px;
+
+ background:
+ linear-gradient(#91d65b,#68ad3f);
+
+ border:3px solid #3e7c2d;
+ border-radius:6px;
+
+ overflow:hidden;
 }
 
 .cell{
- border:1px solid rgba(30,90,25,.25);
  position:relative;
- background:rgba(117,183,67,.22);
- border-radius:3px
+ min-width:0;
+ min-height:0;
+
+ border:1px solid
+ rgba(35,90,28,.3);
+
+ background:
+ rgba(126,190,72,.35);
+
+ border-radius:3px;
 }
 
-.cell:nth-child(odd){
- background:rgba(101,165,58,.20)
+.cell:nth-child(even){
+ background:
+ rgba(104,170,61,.28);
 }
 
+/* PLANT */
 .plant{
  position:absolute;
- inset:5%;
+ inset:2%;
+
  display:flex;
  align-items:center;
  justify-content:center;
- z-index:2
+
+ z-index:4;
 }
 
 .plant img{
  width:100%;
  height:100%;
  object-fit:contain;
- pointer-events:none
+ display:block;
 }
 
+/* ZOMBIE */
 .zombie{
  position:absolute;
- width:52px;
- height:64px;
- border-radius:18px;
- background:#697b62;
- border:3px solid #384537;
+
+ width:55px;
+ height:70px;
+
  display:flex;
  align-items:center;
  justify-content:center;
- font-size:32px;
- z-index:3
+
+ font-size:40px;
+
+ z-index:5;
 }
 
+/* ĐẠN */
 .pea{
  position:absolute;
+
  width:13px;
  height:13px;
+
  border-radius:50%;
- background:#b8ef38;
- border:2px solid #4d9e22;
- z-index:4
+
+ background:#b9ef39;
+ border:2px solid #4e9c21;
+
+ z-index:6;
 }
 
+/* DƯỚI */
 #hint{
+ min-height:23px;
+ padding:4px;
+
  text-align:center;
- background:#163814;
+
+ background:#183b16;
  color:white;
- padding:5px;
- font-size:13px
+
+ font-size:11px;
 }
 
-@media (orientation:portrait){
- #game{
-  transform:rotate(90deg);
-  transform-origin:center center;
-  width:100vh;
-  height:100vw;
-  position:absolute;
-  left:50%;
-  top:50%;
-  margin-left:-50vh;
-  margin-top:-50vw
- }
-}
+/* ĐIỆN THOẠI DỌC */
+@media(max-width:600px){
 
-@media(max-width:700px){
  #top{
-  height:62px;
-  min-height:62px
+  min-height:60px;
  }
 
- button{
-  padding:7px 9px;
-  font-size:12px
+ #sunBox{
+  min-width:65px;
+  font-size:12px;
  }
 
- #sun{
-  padding:7px 10px;
-  font-size:13px
+ .plantBtn{
+  min-width:68px;
+  min-height:46px;
+  font-size:9px;
+ }
+
+ #restart{
+  min-width:38px;
+  min-height:38px;
+ }
+
+ #hint{
+  font-size:9px;
  }
 }
 </style>
@@ -174,4 +226,222 @@ button{
 
 <div id="game">
 
- <div id="
+ <div id="top">
+
+  <div id="sunBox">
+   ☀️ <span id="sunCount">100</span>
+  </div>
+
+  <button
+   class="plantBtn selected"
+   data-type="pea">
+
+   🌱 Đậu<br>
+   <small>50 ☀️</small>
+
+  </button>
+
+  <button
+   class="plantBtn"
+   data-type="sunflower">
+
+   🌻 Sunflower<br>
+   <small>50 ☀️</small>
+
+  </button>
+
+  <button id="restart">
+   🔄
+  </button>
+
+ </div>
+
+ <div id="boardWrap">
+  <div id="board"></div>
+ </div>
+
+ <div id="hint">
+  Chọn cây → chạm ô để trồng
+ </div>
+
+</div>
+
+
+<script>
+
+const ROWS=5;
+const COLS=9;
+
+const COST=50;
+
+const IMAGE={
+ pea:"peashooter.png",
+ sunflower:"sunflower.png"
+};
+
+let sun=100;
+
+let selected="pea";
+
+let plants=[];
+let zombies=[];
+let peas=[];
+
+let gameOver=false;
+
+const board=
+ document.getElementById("board");
+
+const sunCount=
+ document.getElementById("sunCount");
+
+const cells=[];
+
+
+/* =====================
+   TẠO 5 HÀNG
+===================== */
+
+for(let r=0;r<ROWS;r++){
+
+ for(let c=0;c<COLS;c++){
+
+  const cell=
+   document.createElement("div");
+
+  cell.className="cell";
+
+  cell.dataset.row=r;
+  cell.dataset.col=c;
+
+  board.appendChild(cell);
+
+  cells.push(cell);
+
+  cell.onclick=()=>{
+   plant(cell);
+  };
+ }
+}
+
+
+/* =====================
+   SUN
+===================== */
+
+function setSun(value){
+
+ sun=Math.max(0,value);
+
+ sunCount.textContent=sun;
+}
+
+
+/* =====================
+   CHỌN CÂY
+===================== */
+
+document
+ .querySelectorAll(".plantBtn")
+ .forEach(btn=>{
+
+  btn.onclick=()=>{
+
+   document
+    .querySelectorAll(".plantBtn")
+    .forEach(b=>{
+     b.classList.remove("selected");
+    });
+
+   btn.classList.add("selected");
+
+   selected=btn.dataset.type;
+  };
+
+ });
+
+
+/* =====================
+   TRỒNG CÂY
+===================== */
+
+function plant(cell){
+
+ if(gameOver)return;
+
+ if(cell.querySelector(".plant"))
+  return;
+
+ if(sun<COST)
+  return;
+
+
+ const type=selected;
+
+
+ const box=
+  document.createElement("div");
+
+ box.className="plant";
+
+
+ const img=
+  document.createElement("img");
+
+ img.src=IMAGE[type];
+
+ img.alt=type;
+
+
+ /*
+  Nếu ảnh không tải được,
+  hiện emoji thay thế
+ */
+
+ img.onerror=()=>{
+
+  img.remove();
+
+  box.textContent=
+   type==="pea" ? "🌱":"🌻";
+
+  box.style.fontSize="40px";
+ };
+
+
+ box.appendChild(img);
+
+ cell.appendChild(box);
+
+
+ plants.push({
+
+  row:+cell.dataset.row,
+
+  col:+cell.dataset.col,
+
+  type:type,
+
+  element:box
+
+ });
+
+
+ setSun(sun-COST);
+}
+
+
+/* =====================
+   LẤY VỊ TRÍ Ô
+===================== */
+
+function cellPosition(row,col){
+
+ const cell=
+  cells[row*COLS+col];
+
+ if(!cell)return null;
+
+
+ const br=
+  board.getBoundingClientRect();
